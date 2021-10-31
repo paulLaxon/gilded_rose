@@ -29,14 +29,16 @@ describe GildedRose do
       described_class.new(items).update_quality()
   
       items.each_with_index do |item, index|
+        next if item.name == item_names[4]
+
         it 'does not change the name' do
             expect(item.name).to eq item_names[index]
         end
         it 'does not reduce the quality to a negative' do
           expect(item.quality).to be >= 0 
         end
-        it 'reduces the sell_in date by 1 (except for Sulphura)' do
-          expect(item.sell_in).to eq days - 1 if item.name != item_names[4]
+        it 'reduces the sell_in date by 1' do
+          expect(item.sell_in).to eq days - 1
         end
       end
     end
