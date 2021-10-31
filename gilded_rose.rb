@@ -16,17 +16,26 @@ class GildedRose
         item.quality = calculate_quality_passes(item)
       elsif item.name == "Aged Brie"
         item.quality = calculate_quality_brie(item)
+      elsif item.name == "Conjured Mana Cake"
+        item.quality = calculate_quality_generic(item, 2)
       else
-        item.quality = calculate_quality_generic(item)
+        item.quality = calculate_quality_generic(item, 1)
       end
     end
   end
 
   private
 
-  def calculate_quality_generic(item)
-    quality = item.quality - 1
-    quality -= 1 if item.sell_in < 0
+  def calculate_quality_generic(item, step)
+    quality = item.quality - step
+    quality -= step if item.sell_in < 0
+    quality = 0 if quality < 0
+    quality
+  end
+
+  def calculate_quality_conjured(item, step)
+    quality = item.quality - step
+    quality -= step if item.sell_in < 0
     quality = 0 if quality < 0
     quality
   end

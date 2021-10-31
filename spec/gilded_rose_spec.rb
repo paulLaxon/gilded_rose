@@ -11,7 +11,7 @@ describe GildedRose do
       'Aged Brie',
       'Sulfuras, Hand of Ragnaros',
       'Backstage passes to a TAFKAL80ETC concert',
-      # 'Conjured Mana Cake'
+      'Conjured Mana Cake'
     ]
 
     SULFURAS_QUALITY = 80.freeze
@@ -26,11 +26,12 @@ describe GildedRose do
         items.push(Item.new(name, days, quality))
       end
     
+      puts items
       described_class.new(items).update_quality()
   
       items.each_with_index do |item, index|
         next if item.name == item_names[4]
-
+        puts "#{index}. #{item.name} should be #{item_names[index]}"
         it 'does not change the name' do
             expect(item.name).to eq item_names[index]
         end
@@ -135,21 +136,21 @@ describe GildedRose do
       end
     end
 
-    # context 'for Conjured Mana Cake' do
-    #   days = 1
-    #   quality = 15
-    #   items = [
-    #     Item.new(item_names[6], days, quality), 
-    #   ]
-    #   described_class.new(items).update_quality()
+    context 'for Conjured Mana Cake' do
+      days = 1
+      quality = 15
+      items = [
+        Item.new(item_names[6], days, quality), 
+      ]
+      described_class.new(items).update_quality()
 
-    #   it 'decreases in quality by 2 before sell_in date' do
-    #     expect(items[0].quality).to eq quality1 - 2
-    #   end
-    #   it 'cannot have a quality by 4 after sell_in date' do
-    #     described_class.new(items).update_quality()
-    #     expect(items[1].quality).to eq quality - 6
-    #   end
-    # end
+      it 'decreases in quality by 2 before sell_in date' do
+        expect(items[0].quality).to eq quality - 2
+      end
+      it 'decreases in quality by 4 after sell_in date' do
+        described_class.new(items).update_quality()
+        expect(items[0].quality).to eq quality - 6
+      end
+    end
   end
 end
