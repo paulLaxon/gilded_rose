@@ -33,13 +33,6 @@ class GildedRose
     quality
   end
 
-  def calculate_quality_conjured(item, step)
-    quality = item.quality - step
-    quality -= step if item.sell_in < 0
-    quality = 0 if quality < 0
-    quality
-  end
-
   def calculate_quality_passes(item)
     quality = item.quality + 1
     quality += 1 if item.sell_in < 11
