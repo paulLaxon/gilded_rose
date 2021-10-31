@@ -10,30 +10,41 @@ class GildedRose
     @items.each do |item|
       next if item.name == "Sulfuras, Hand of Ragnaros"
 
-      if item.name != "Aged Brie" and item.name != "Backstage passes to a TAFKAL80ETC concert"
-        item.quality = item.quality - 1 if item.quality > 0
+      item.sell_in -= 1
+
+      if item.name == "Backstage passes to a TAFKAL80ETC concert"
+        item.quality = calculate_quality_passes(item)
+      elsif item.name == "Aged Brie"
+        item.quality = calculate_quality_brie(item)
       else
-        if item.quality < 50
-          item.quality = item.quality + 1
-          if item.name == "Backstage passes to a TAFKAL80ETC concert"
-            item.quality = item.quality + 1 if item.sell_in < 11
-            item.quality = item.quality + 1 if item.sell_in < 6
-          end
-        end
-      end
-      item.sell_in = item.sell_in - 1
-      if item.sell_in < 0
-        if item.name != "Aged Brie"
-          if item.name != "Backstage passes to a TAFKAL80ETC concert"
-            item.quality = item.quality - 1 if item.quality > 0
-          else
-            item.quality = item.quality - item.quality
-          end
-        elsif item.quality < 50
-          item.quality = item.quality + 1
-        end
+        item.quality = calculate_quality_generic(item)
       end
     end
+  end
+
+  private
+
+  def calculate_quality_generic(item)
+    quality = item.quality - 1
+    quality -= 1 if item.sell_in < 0
+    quality = 0 if quality < 0
+    quality
+  end
+
+  def calculate_quality_passes(item)
+    quality = item.quality + 1
+    quality += 1 if item.sell_in < 11
+    quality += 1 if item.sell_in < 6
+    quality = 0 if item.sell_in < 0
+    quality = 50 if quality > 50
+    quality
+  end
+
+  def calculate_quality_brie(item)
+    quality = item.quality + 1
+    quality += 1 if item.sell_in < 0
+    quality = 50 if quality > 50
+    quality
   end
 end
 
