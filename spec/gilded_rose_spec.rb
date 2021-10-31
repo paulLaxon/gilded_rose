@@ -26,7 +26,6 @@ describe GildedRose do
         items.push(Item.new(name, days, quality))
       end
     
-      puts items
       described_class.new(items).update_quality()
   
       items.each_with_index do |item, index|
@@ -128,7 +127,7 @@ describe GildedRose do
       it 'increases in quality by 2 if sell_in date is > 5 and <= 10' do
         expect(items[1].quality).to eq quality + 2
       end
-      it 'increases in quality by 1 as sell_in date is <= 5' do
+      it 'increases in quality by 3 as sell_in date is <= 5' do
         expect(items[2].quality).to eq quality + 3
       end
       it 'decreases quality to 0 after the sell_in date' do
