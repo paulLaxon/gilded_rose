@@ -11,7 +11,6 @@ describe GildedRose do
       'Aged Brie',
       'Sulfuras, Hand of Ragnaros',
       'Backstage passes to a TAFKAL80ETC concert',
-      'Conjured Mana Cake'
     ]
 
     SULFURAS_QUALITY = 80.freeze
@@ -135,7 +134,7 @@ describe GildedRose do
       end
     end
 
-    context 'for Conjured Mana Cake' do
+    xit context 'for Conjured Mana Cake' do
       days = 1
       quality = 15
       items = [
