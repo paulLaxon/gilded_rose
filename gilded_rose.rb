@@ -27,7 +27,7 @@ class GildedRose
     item.quality = 50 if item.quality > 50
   end
 
-  def sulfuras_update(item);end
+  def sulfuras_update(item); end
 
   def update_quality
     @items.each do |item|
@@ -43,6 +43,16 @@ class GildedRose
       end
     end
   end
+end
+
+class ItemsUpdate
+  attr_reader :items
+
+  def initialize(items)
+    @items = items
+  end
+
+
 end
 
 class Item

@@ -9,7 +9,7 @@ PASSES = 'Backstage passes to a TAFKAL80ETC concert'.freeze
 
 describe GildedRose do
   describe 'when updating normal items' do
-    items = [Item.new(GENERIC, 1, 16)]
+    items = [Item.new(GENERIC, 1, 8)]
     inventory = described_class.new(items)
 
     it 'decreases the selling date by 1' do
@@ -20,14 +20,19 @@ describe GildedRose do
 
     context 'before the sell-by date' do
       it 'decreases the quality by 1' do
-        expect(items[0].quality).to eq(15)
+        expect(items[0].quality).to eq(7)
       end
     end
 
     context 'after the sell-by date' do
       it 'decreases the quality by 2' do
         inventory.update_quality
-        expect(items[0].quality).to eq(13)
+        expect(items[0].quality).to eq(5)
+      end
+
+      it 'the sell_by continues to decrease for every update' do
+        inventory.update_quality
+        expect(items[0].sell_in).to eq(-2)
       end
     end
 
@@ -55,8 +60,13 @@ describe GildedRose do
     it 'the quality is never > 50' do
       items = [Item.new(PASSES, 3, 49)]
       inventory = described_class.new(items)
-      2.times { inventory.update_quality }
+      3.times { inventory.update_quality }
       expect(items[0].quality).to eq(50)
+    end
+
+    it 'the sell_by continues to decrease for every update' do
+      inventory.update_quality
+      expect(items[0].sell_in).to eq(-1)
     end
   end
 
@@ -86,6 +96,11 @@ describe GildedRose do
     it 'the quality is 0 when the sell_by date < 0' do
       inventory.update_quality
       expect(items[0].quality).to eq(0)
+    end
+
+    it 'the sell_by continues to decrease for every update' do
+      inventory.update_quality
+      expect(items[0].sell_in).to eq(-2)
     end
 
     it 'the quality is never > 50' do
