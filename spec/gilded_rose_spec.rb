@@ -14,8 +14,9 @@ describe GildedRose do
 
     it 'decreases the selling date by 1' do
       inventory = described_class.new(items)
+      # byebug
       inventory.update_quality
-      expect(items[0].sell_in).to eq(0)
+      expect(items[0].days_remaining).to eq(0)
     end
 
     context 'before the sell-by date' do
@@ -32,7 +33,7 @@ describe GildedRose do
 
       it 'the sell_by continues to decrease for every update' do
         inventory.update_quality
-        expect(items[0].sell_in).to eq(-2)
+        expect(items[0].days_remaining).to eq(-2)
       end
     end
 
@@ -48,9 +49,9 @@ describe GildedRose do
     items = [Item.new(BRIE, 2, 48)]
     inventory = described_class.new(items)
 
-    it 'the sell_in date decreases by 1' do
+    it 'the days_remaining date decreases by 1' do
       inventory.update_quality
-      expect(items[0].sell_in).to eq(1)
+      expect(items[0].days_remaining).to eq(1)
     end
 
     it 'the quality increases by 1 as it gets older' do
@@ -66,7 +67,7 @@ describe GildedRose do
 
     it 'the sell_by continues to decrease for every update' do
       inventory.update_quality
-      expect(items[0].sell_in).to eq(-1)
+      expect(items[0].days_remaining).to eq(-1)
     end
   end
 
@@ -74,21 +75,21 @@ describe GildedRose do
     items = [Item.new(PASSES, 11, 24)]
     inventory = described_class.new(items)
 
-    it 'the sell_in date decreases by 1' do
+    it 'the days_remaining date decreases by 1' do
       inventory.update_quality
-      expect(items[0].sell_in).to eq(10)
+      expect(items[0].days_remaining).to eq(10)
     end
 
-    it 'the quality increases by 1 when sell_in days is > 10' do
+    it 'the quality increases by 1 when days_remaining days is > 10' do
       expect(items[0].quality).to eq(25)
     end
 
-    it 'the quality increases by 2 when sell_in days is > 5 and less <= 10' do
+    it 'the quality increases by 2 when days_remaining days is > 5 and less <= 10' do
       5.times { inventory.update_quality }
       expect(items[0].quality).to eq(35)
     end
 
-    it 'the quality increases by 3 when sell_in days is <= 5 and >= 0' do
+    it 'the quality increases by 3 when days_remaining days is <= 5 and >= 0' do
       5.times { inventory.update_quality }
       expect(items[0].quality).to eq(50)
     end
@@ -100,7 +101,7 @@ describe GildedRose do
 
     it 'the sell_by continues to decrease for every update' do
       inventory.update_quality
-      expect(items[0].sell_in).to eq(-2)
+      expect(items[0].days_remaining).to eq(-2)
     end
 
     it 'the quality is never > 50' do
@@ -117,7 +118,7 @@ describe GildedRose do
 
     it 'never has to be sold' do
       inventory.update_quality
-      expect(items[0].sell_in).to eq(11)
+      expect(items[0].days_remaining).to eq(11)
     end
 
     it 'the quality never changes and is always 80' do
