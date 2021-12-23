@@ -1,18 +1,24 @@
 class GildedRose
   def initialize(items)
     @items = items
+  end
 
-    def klass_for(name)
-      case name
-      when 'normal'
-        Normal
-      when 'Aged Brie'
-        Brie
-      when 'Backstage passes to a TAFKAL80ETC concert'
-        Passes
-      when 'Sulfuras, Hand of Ragnaros'
-        Sulfuras
-      end
+  def update_quality
+    @items.each do |item|
+      update_item(item)
+    end
+  end
+
+  def klass_for(name)
+    case name
+    when 'normal'
+      Normal
+    when 'Aged Brie'
+      Brie
+    when 'Backstage passes to a TAFKAL80ETC concert'
+      Passes
+    when 'Sulfuras, Hand of Ragnaros'
+      Sulfuras
     end
   end
 
