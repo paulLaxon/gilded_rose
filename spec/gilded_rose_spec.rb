@@ -2,21 +2,18 @@ require 'spec_helper'
 require 'byebug'
 require './gilded_rose'
 
-GENERIC = 'Generic Items'.freeze
+GENERIC = 'normal'.freeze
 BRIE = 'Aged Brie'.freeze
 SULFURAS = 'Sulfuras, Hand of Ragnaros'.freeze
 PASSES = 'Backstage passes to a TAFKAL80ETC concert'.freeze
 
-describe GildedRose do
+describe Items do
   describe 'when updating normal items' do
-    items = [Item.new(GENERIC, 1, 8)]
+    items = [GildedRose.for(GENERIC, 8, 0)]
     inventory = described_class.new(items)
-
     it 'decreases the selling date by 1' do
-      inventory = described_class.new(items)
-      # byebug
       inventory.update_quality
-      expect(items[0].days_remaining).to eq(0)
+      expect(items[0].days_remaining).to eq(-1)
     end
 
     context 'before the sell-by date' do
@@ -33,7 +30,7 @@ describe GildedRose do
 
       it 'the sell_by continues to decrease for every update' do
         inventory.update_quality
-        expect(items[0].days_remaining).to eq(-2)
+        expect(items[0].days_remaining).to eq(-3)
       end
     end
 
@@ -46,7 +43,7 @@ describe GildedRose do
   end
 
   describe 'when updating brie' do
-    items = [Item.new(BRIE, 2, 48)]
+    items = [GildedRose.for(BRIE, 48, 2)]
     inventory = described_class.new(items)
 
     it 'the days_remaining date decreases by 1' do
@@ -59,7 +56,7 @@ describe GildedRose do
     end
 
     it 'the quality is never > 50' do
-      items = [Item.new(PASSES, 3, 49)]
+      items = [GildedRose.for(BRIE, 49, 3)]
       inventory = described_class.new(items)
       3.times { inventory.update_quality }
       expect(items[0].quality).to eq(50)
@@ -72,7 +69,7 @@ describe GildedRose do
   end
 
   describe 'when updating passes' do
-    items = [Item.new(PASSES, 11, 24)]
+    items = [GildedRose.for(PASSES, 24, 11)]
     inventory = described_class.new(items)
 
     it 'the days_remaining date decreases by 1' do
@@ -105,7 +102,7 @@ describe GildedRose do
     end
 
     it 'the quality is never > 50' do
-      items = [Item.new(PASSES, 3, 48)]
+      items = [GildedRose.for(PASSES, 48, 3)]
       inventory = described_class.new(items)
       inventory.update_quality
       expect(items[0].quality).to eq(50)
@@ -113,7 +110,7 @@ describe GildedRose do
   end
 
   describe 'when updating sulfuras' do
-    items = [Item.new(SULFURAS, 11, 80)]
+    items = [GildedRose.for(SULFURAS, 80, 11)]
     inventory = described_class.new(items)
 
     it 'never has to be sold' do
