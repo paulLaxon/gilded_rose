@@ -56,10 +56,20 @@ module GildedRose
     end
   end
 
+  class Conjured < Item
+    def update
+      @quality -= 2
+      @quality -= 2 if @days_remaining.negative?
+      @quality = 0 if @quality.negative?
+      @days_remaining -= 1
+    end
+  end
+
   DEFAULT_CLASS = Item
   SPECIALIZED_CLASSES = {
     'normal' => Normal,
     'Aged Brie' => Brie,
-    'Backstage passes to a TAFKAL80ETC concert' => Passes
+    'Backstage passes to a TAFKAL80ETC concert' => Passes,
+    'Conjured Mana Cake' => Conjured
   }.freeze
 end
