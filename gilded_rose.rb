@@ -1,63 +1,65 @@
-class GildedRose
+class Items
+  attr_accessor :items
 
   def initialize(items)
     @items = items
   end
 
-  def update_quality()
-    @items.each do |item|
-      next if item.name == "Sulfuras, Hand of Ragnaros"
-
-      item.sell_in -= 1
-
-      if item.name == "Backstage passes to a TAFKAL80ETC concert"
-        item.quality = calculate_quality_passes(item)
-      elsif item.name == "Aged Brie"
-        item.quality = calculate_quality_brie(item)
-      elsif item.name == "Conjured Mana Cake"
-        item.quality = calculate_quality_generic(item, 2)
-      else
-        item.quality = calculate_quality_generic(item, 1)
-      end
-    end
-  end
-
-  private
-
-  def calculate_quality_generic(item, step)
-    quality = item.quality - step
-    quality -= step if item.sell_in < 0
-    quality = 0 if quality < 0
-    quality
-  end
-
-  def calculate_quality_passes(item)
-    quality = item.quality + 1
-    quality += 1 if item.sell_in < 11
-    quality += 1 if item.sell_in < 6
-    quality = 0 if item.sell_in < 0
-    quality = 50 if quality > 50
-    quality
-  end
-
-  def calculate_quality_brie(item)
-    quality = item.quality + 1
-    quality += 1 if item.sell_in < 0
-    quality = 50 if quality > 50
-    quality
+  def update_quality
+    @new_items = @items.map(&:update)
   end
 end
 
-class Item
-  attr_accessor :name, :sell_in, :quality
-
-  def initialize(name, sell_in, quality)
-    @name = name
-    @sell_in = sell_in
-    @quality = quality
+module GildedRose
+  def self.for(name, quality, days_remaining)
+    (SPECIALIZED_CLASSES[name] || DEFAULT_CLASS).new(quality, days_remaining)
   end
 
-  def to_s()
-    "#{@name}, #{@sell_in}, #{@quality}"
+  class Item
+    attr_accessor :quality, :days_remaining
+
+    def initialize(quality, days_remaining)
+      @quality = quality
+      @days_remaining = days_remaining
+    end
+
+    def update; end
   end
+
+  class Normal < Item
+    def update
+      @quality -= 1
+      @quality -= 1 if @days_remaining.negative?
+      @quality = 0 if @quality.negative?
+      @days_remaining -= 1
+    end
+  end
+
+  class Passes < Item
+    def update
+      @days_remaining -= 1
+      @quality += 1
+
+      @quality += 1 if @days_remaining < 10
+      @quality += 1 if @days_remaining < 5
+      @quality = 0 if @days_remaining.negative?
+
+      @quality = 50 if @quality > 50
+    end
+  end
+
+  class Brie < Item
+    def update
+      @days_remaining -= 1
+      @quality += 1
+      @quality = 50 if @quality > 50
+    end
+  end
+
+  DEFAULT_CLASS = Item
+  SPECIALIZED_CLASSES = {
+    'normal' => Normal,
+    'Aged Brie' => Brie,
+    'Backstage passes to a TAFKAL80ETC concert' => Passes
+  }.freeze
 end
