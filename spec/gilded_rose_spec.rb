@@ -6,6 +6,7 @@ GENERIC = 'normal'.freeze
 BRIE = 'Aged Brie'.freeze
 SULFURAS = 'Sulfuras, Hand of Ragnaros'.freeze
 PASSES = 'Backstage passes to a TAFKAL80ETC concert'.freeze
+CONJURED = 'Conjured Mana Cake'.freeze
 
 describe Items do
   describe 'when updating normal items' do
@@ -120,6 +121,40 @@ describe Items do
 
     it 'the quality never changes and is always 80' do
       expect(items[0].quality).to eq(80)
+    end
+  end
+
+  describe 'when updating conjured item' do
+    items = [GildedRose.for(CONJURED, 8, 0)]
+    inventory = described_class.new(items)
+    it 'decreases the selling date by 1' do
+      inventory.update_quality
+      expect(items[0].days_remaining).to eq(-1)
+    end
+
+    context 'before the sell-by date' do
+      it 'decreases the quality by 2' do
+        expect(items[0].quality).to eq(6)
+      end
+    end
+
+    context 'after the sell-by date' do
+      it 'decreases the quality by 4' do
+        inventory.update_quality
+        expect(items[0].quality).to eq(2)
+      end
+
+      it 'the sell_by continues to decrease for every update' do
+        inventory.update_quality
+        expect(items[0].days_remaining).to eq(-3)
+      end
+    end
+
+    context 'the quality' do
+      it 'is never negative' do
+        2.times { inventory.update_quality }
+        expect(items[0].quality).to be(0)
+      end
     end
   end
 end
